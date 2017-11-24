@@ -3,7 +3,7 @@ package com.github.ksokol.mailsink.subehtamail;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.autoconfigure.mail.MailProperties;
 import org.subethamail.smtp.server.SMTPServer;
 

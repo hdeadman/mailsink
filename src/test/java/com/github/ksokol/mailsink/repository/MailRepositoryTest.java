@@ -61,7 +61,7 @@ public class MailRepositoryTest {
         mail.setCreatedAt(cratedAt);
 
         mail = em.persist(mail);
-        Mail expected = mailRepository.findOne(mail.getId());
+        Mail expected = mailRepository.findById(mail.getId()).orElseThrow(AssertionError::new);
 
         assertThat(expected.getId(), is(mail.getId()));
         assertThat(expected.getMessageId(), is("messageId"));
@@ -87,7 +87,7 @@ public class MailRepositoryTest {
         assertThat(
                 "should order mails by creation date descending",
                 mailRepository.findAllOrderByCreatedAtDesc(),
-                contains(hasProperty("id", is(1L)), hasProperty("id", is(0L)))
+                contains(hasProperty("id", is(mail2.getId())), hasProperty("id", is(mail1.getId())))
         );
     }
 

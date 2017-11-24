@@ -8,14 +8,13 @@ import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import static java.util.Collections.singletonMap;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 
@@ -55,14 +54,14 @@ public class IncomingMessageListenerTest {
 
     @Test
     public void shouldPublishInProperTopic() throws Exception {
-        verify(template).convertAndSend(eq("/topic/incoming-mail"), any(Mail.class));
+        verify(template).convertAndSend("/topic/incoming-mail", singletonMap("id", 999L));
     }
 
     @Test
     public void shouldSaveMailBeforePublish() throws Exception {
         InOrder callOrder = inOrder(mailRepository, template);
 
-        callOrder.verify(mailRepository).save(Mockito.<Mail>any());
-        callOrder.verify(template).convertAndSend(anyString(), Mockito.<Mail>any());
+        callOrder.verify(mailRepository).save(any());
+        callOrder.verify(template).convertAndSend(anyString(), eq(singletonMap("id", 999L)));
     }
 }

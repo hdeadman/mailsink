@@ -74,7 +74,7 @@ public class StaticResourceTest {
                 .header(ACCEPT, TEXT_HTML))
                 .andDo(result -> log.info(String.format("asserting %s exists", srcAttribute)))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("text/javascript"));
+                .andExpect(content().contentType("application/javascript"));
         }
     }
 

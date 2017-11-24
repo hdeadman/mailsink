@@ -9,6 +9,8 @@ import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.json.JsonContentAssert;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * @author Kamill Sokol
  */
@@ -30,7 +32,7 @@ public class MailAttachmentJsonTest {
         attachment.setDispositionType("expected dispositionType");
         attachment.setData(new byte[] {97});
 
-        jsonContentAssert = json.write(attachment).assertThat();
+        jsonContentAssert = assertThat(json.write(attachment));
     }
 
     @Test
