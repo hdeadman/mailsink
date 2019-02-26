@@ -1,7 +1,7 @@
-FROM openjdk:8-jre-alpine
+FROM gcr.io/distroless/java:8
 
-ADD target/mailsink.jar /opt/mailsink.jar
+COPY target/mailsink.jar /
 
 EXPOSE 2500 2525
 
-CMD [ "java" ,"-jar", "/opt/mailsink.jar" ]
+CMD [ "/mailsink.jar" ]
