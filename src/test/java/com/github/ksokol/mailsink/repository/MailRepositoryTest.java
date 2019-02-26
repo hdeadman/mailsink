@@ -18,6 +18,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasProperty;
@@ -61,17 +62,17 @@ public class MailRepositoryTest {
         mail.setCreatedAt(cratedAt);
 
         mail = em.persist(mail);
-        Mail expected = mailRepository.findOne(mail.getId());
-
-        assertThat(expected.getId(), is(mail.getId()));
-        assertThat(expected.getMessageId(), is("messageId"));
-        assertThat(expected.getSender(), is("sender"));
-        assertThat(expected.getRecipient(), is("recipient"));
-        assertThat(expected.getSubject(), is("subject"));
-        assertThat(expected.getText(), is("plain"));
-        assertThat(expected.getHtml(), is("html"));
-        assertThat(expected.getSource(), is("source"));
-        assertThat(expected.getCreatedAt(), is(cratedAt));
+        Optional<Mail> expected = mailRepository.findById(mail.getId());
+        Mail expectedMail = expected.get();
+        assertThat(expectedMail.getId(), is(mail.getId()));
+        assertThat(expectedMail.getMessageId(), is("messageId"));
+        assertThat(expectedMail.getSender(), is("sender"));
+        assertThat(expectedMail.getRecipient(), is("recipient"));
+        assertThat(expectedMail.getSubject(), is("subject"));
+        assertThat(expectedMail.getText(), is("plain"));
+        assertThat(expectedMail.getHtml(), is("html"));
+        assertThat(expectedMail.getSource(), is("source"));
+        assertThat(expectedMail.getCreatedAt(), is(cratedAt));
     }
 
     @Test

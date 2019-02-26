@@ -13,7 +13,8 @@ var app = angular.module('mailsinkApp',
 app.constant('TOPIC_PREFIX', '/topic');
 
 app.factory('WEB_SOCKET_ENDPOINT', function($window) {
-    return 'ws://' + $window.location.hostname + ':' + $window.location.port + '/ws/websocket';
+    // note we are hard coding both the wss  protocol and the /mailsink context 
+    return 'wss://' + $window.location.hostname + ':' + $window.location.port + '/mailsink/ws/websocket';
 });
 
 app.factory('stompFactory', function() {

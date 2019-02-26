@@ -33,7 +33,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>1.5.19.RELEASE</version>
+    <version>2.1.3.RELEASE</version>
     <relativePath />
   </parent>
 
@@ -42,12 +42,14 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>1.8</java.version>
     <mime4j.version>0.8.0</mime4j.version>
-    <angular.version>1.6.5</angular.version>
+    <angular.version>1.6.10</angular.version>
     <sonar.host.url>https://sonarqube.com</sonar.host.url>
     <sonar.sources>src/main</sonar.sources>
     <sonar.tests>src/test</sonar.tests>
     <sonar.testExecutionReportPaths>target/karma-reports/TEST.xml</sonar.testExecutionReportPaths>
     <sonar.javascript.lcov.reportPaths>target/karma-reports/coverage/lcov.info</sonar.javascript.lcov.reportPaths>
+    <javatag>11</javatag>
+    <registry>docker.registry</registry>
   </properties>
 
   <dependencies>
@@ -163,16 +165,25 @@
       <version>0.7.1</version>
     </dependency>
     <dependency>
-      <groupId>org.webjars.bower</groupId>
-      <artifactId>github-com-webcomponents-shadydom</artifactId>
-      <version>v1.0.0</version>
+      <groupId>org.webjars.npm</groupId>
+      <artifactId>webcomponents__webcomponentsjs</artifactId>
+      <version>2.2.7</version>
     </dependency>
     <dependency>
       <groupId>org.webjars</groupId>
       <artifactId>jquery</artifactId>
       <version>1.12.4</version>
     </dependency>
-
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>2.3.2</version>
+		</dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
@@ -337,6 +348,88 @@
           </execution>
         </executions>
       </plugin>
-    </plugins>
-  </build>
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>1.0.1</version>
+				<configuration>
+					<allowInsecureRegistries>true</allowInsecureRegistries>
+					<from>
+						<image>gcr.io/distroless/java:${javatag}</image>
+					</from>
+					<to>
+						<image>${registry}/devops/mailsink</image>
+						<auth>
+							<username>user</username> <!-- -Djib.to.auth.username=someuser -->
+							<password>pass</password> <!-- -Djib.to.auth.password=thepassword -->
+						</auth>
+						<tags>
+							<tag>${project.version}</tag>
+							<tag>latest</tag>
+						</tags>					
+					</to>
+					<container>
+						<environment>
+						</environment>
+						<jvmFlags>
+							<jvmFlag>-Xms512m</jvmFlag>
+							<jvmFlag>-Xmx1g</jvmFlag>
+						</jvmFlags>
+						<args>
+							<arg>--spring.profiles.active=ssl</arg>
+						</args>
+						<format>Docker</format> <!--could be OCI-->
+						<useCurrentTimestamp>true</useCurrentTimestamp>
+					</container>
+					<user>1000:1000</user>
+					<extraDirectory>
+						<path>${project.basedir}/src/main/jib</path>
+						<permissions>
+							<permission>
+								<file>/opt/config</file>
+								<mode>755</mode>
+							</permission>
+						</permissions>
+					</extraDirectory>
+				</configuration>
+			</plugin>			
+		</plugins>
+	</build>
+	<profiles>
+		<profile>
+			<id>create-keystore-if-missing</id>
+			<activation>
+					<file>
+						<missing>src/main/jib/opt/mailsink/config/server.jks</missing>
+					</file>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>keytool-maven-plugin</artifactId>
+						<version>1.5</version>
+						<executions>
+						<execution>
+							<goals>
+							<goal>generateKeyPair</goal>
+							</goals>
+							<phase>generate-resources</phase>
+						</execution>
+						</executions>
+						<configuration>
+							<keystore>src/main/jib/opt/mailsink/config/server.jks</keystore>
+							<storepass>changeit</storepass>
+							<keypass>changeit</keypass>
+							<alias>server</alias>
+							<validity>3650</validity>
+							<keyalg>RSA</keyalg>
+							<keysize>2048</keysize>
+							<dname>CN=mailsink,ou=example,ou=org</dname>
+						</configuration>
+					</plugin>			
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
