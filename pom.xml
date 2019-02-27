@@ -380,8 +380,8 @@
 						</args>
 						<format>Docker</format> <!--could be OCI-->
 						<useCurrentTimestamp>true</useCurrentTimestamp>
+						<user>1000:1000</user>
 					</container>
-					<user>1000:1000</user>
 					<extraDirectory>
 						<path>${project.basedir}/src/main/jib</path>
 						<permissions>
